@@ -13,6 +13,7 @@ let postWebhook = (req, res) => {
 
             // Gets the body of the webhook event
             let webhook_event = entry.messaging[0];
+            console.log("webhook_event");
             console.log(webhook_event, "webhook_event");
 
 
@@ -138,8 +139,6 @@ function callSendAPI(sender_psid, response) {
         },
         "message": { "text": response }
     };
-
-    console.log(request_body)
     // Send the HTTP request to the Messenger Platform
     request({
         "uri": "https://graph.facebook.com/v7.0/me/messages",
@@ -148,10 +147,7 @@ function callSendAPI(sender_psid, response) {
         "json": request_body
     }, (err, res, body) => {
         if (!err) {
-            console.log("err", err);
-            console.log("body", body);
-            console.log("body", body);
-            console.log('message sent!');
+
         } else {
             console.error("Unable to send message:" + err);
         }
@@ -170,7 +166,7 @@ function handleMessage(sender_psid, message) {
     //handle message for react, like press like button
     // id like button: sticker_id 369239263222822
 
-    console.log("message", message)
+    console.log("message1232", message)
     if (message && message.attachments && message.attachments[0].payload) {
         callSendAPI(sender_psid, "Thank you for watching my video !!!");
         callSendAPIWithTemplate(sender_psid);
