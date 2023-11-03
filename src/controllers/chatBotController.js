@@ -1,7 +1,7 @@
 require("dotenv").config();
 import request from "request";
 
-let postWebhook = (req, res) =>{
+let postWebhook = (req, res) => {
     // Parse the request body from the POST
     let body = req.body;
 
@@ -9,7 +9,7 @@ let postWebhook = (req, res) =>{
     if (body.object === 'page') {
 
         // Iterate over each entry - there may be multiple if batched
-        body.entry.forEach(function(entry) {
+        body.entry.forEach(function (entry) {
 
             // Gets the body of the webhook event
             let webhook_event = entry.messaging[0];
@@ -139,6 +139,7 @@ function callSendAPI(sender_psid, response) {
         "message": { "text": response }
     };
 
+    console.log(request_body)
     // Send the HTTP request to the Messenger Platform
     request({
         "uri": "https://graph.facebook.com/v7.0/me/messages",
@@ -147,6 +148,9 @@ function callSendAPI(sender_psid, response) {
         "json": request_body
     }, (err, res, body) => {
         if (!err) {
+            console.log("err", err);
+            console.log("body", body);
+            console.log("body", body);
             console.log('message sent!');
         } else {
             console.error("Unable to send message:" + err);
@@ -166,13 +170,13 @@ function handleMessage(sender_psid, message) {
     //handle message for react, like press like button
     // id like button: sticker_id 369239263222822
 
-    if( message && message.attachments && message.attachments[0].payload){
+    if (message && message.attachments && message.attachments[0].payload) {
         callSendAPI(sender_psid, "Thank you for watching my video !!!");
         callSendAPIWithTemplate(sender_psid);
         return;
     }
 
-    let entitiesArr = [ "wit$greetings", "wit$thanks", "wit$bye" ];
+    let entitiesArr = ["wit$greetings", "wit$thanks", "wit$bye"];
     let entityChosen = "";
     entitiesArr.forEach((name) => {
         let entity = firstTrait(message.nlp, name);
@@ -181,21 +185,21 @@ function handleMessage(sender_psid, message) {
         }
     });
 
-    if(entityChosen === ""){
+    if (entityChosen === "") {
         //default
-        callSendAPI(sender_psid,`The bot is needed more training, try to say "thanks a lot" or "hi" to the bot` );
-    }else{
-       if(entityChosen === "wit$greetings"){
-           //send greetings message
-           callSendAPI(sender_psid,'Hi there! This bot is created by Hary Pham. Watch more videos on HaryPhamDev Channel!');
-       }
-       if(entityChosen === "wit$thanks"){
-           //send thanks message
-           callSendAPI(sender_psid,`You 're welcome!`);
-       }
-        if(entityChosen === "wit$bye"){
+        callSendAPI(sender_psid, `The bot is needed more training, try to say "thanks a lot" or "hi" to the bot`);
+    } else {
+        if (entityChosen === "wit$greetings") {
+            //send greetings message
+            callSendAPI(sender_psid, 'Hi there! This bot is created by Hary Pham. Watch more videos on HaryPhamDev Channel!');
+        }
+        if (entityChosen === "wit$thanks") {
+            //send thanks message
+            callSendAPI(sender_psid, `You 're welcome!`);
+        }
+        if (entityChosen === "wit$bye") {
             //send bye message
-            callSendAPI(sender_psid,'bye-bye!');
+            callSendAPI(sender_psid, 'bye-bye!');
         }
     }
 }
@@ -246,6 +250,6 @@ let callSendAPIWithTemplate = (sender_psid) => {
 };
 
 module.exports = {
-  postWebhook: postWebhook,
-  getWebhook: getWebhook
+    postWebhook: postWebhook,
+    getWebhook: getWebhook
 };
